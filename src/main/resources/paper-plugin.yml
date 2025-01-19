@@ -1,0 +1,7 @@
+name: GuiApi
+version: "${version}"
+main: me.gaminglounge.guiapi.GuiApi
+description: API to create GUIS's
+api-version: "1.21.4"
+authors:
+  - "Jon1Games"
