@@ -3,72 +3,87 @@ package me.gaminglounge.guiapi;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import me.gaminglounge.configapi.Language;
+import me.gaminglounge.itembuilder.ItemBuilder;
+import me.gaminglounge.itembuilder.ItemBuilderManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
 public class Pagenation implements InventoryHolder{
-    private MiniMessage mm;
+    private final MiniMessage mm;
 
-    public Inventory inv;
-    public Component inventoryName;
-
-    public ItemStack next;
-    public ItemStack back;
-    public ItemStack close;
-
-    public ItemStack placeholderItem;
-    public int[] placeholderItemIndex;
+    private Inventory inv;
+    private Component inventoryName;
 
     public List<ItemStack> items;
+
+    public Player player;
 
     public int currentpage;
     public static final int numItemsOnPage =  7 * 4;
 
-    public Pagenation() {
+    /*
+     * Funkitons needed:
+     * - setPlaceholderItem()
+     * - setItems()
+     */
+    public Pagenation(Player p) {
+        this.player = p;
         mm = MiniMessage.miniMessage();
+
+        ItemBuilderManager.addBothClickEvent("GuiAPI:nextPage", (e) -> {
+            if (e.getInventory().getHolder() instanceof Pagenation pgi) {
+                e.setCancelled(true);
+                int targetPage = pgi.currentpage + 1;
+                if (targetPage < 0 || targetPage > pgi.items.size() / Pagenation.numItemsOnPage) {
+                    // error
+                    return;
+                }
+                pgi.fillPage(targetPage);
+            }
+        });
+
+        ItemBuilderManager.addBothClickEvent("GuiAPI:prevPage", (e) -> {
+            if (e.getInventory().getHolder() instanceof Pagenation pgi) {
+                e.setCancelled(true);
+                int targetPage = pgi.currentpage - 1;
+                if (targetPage < 0 || targetPage > (pgi.items.size() + Pagenation.numItemsOnPage - 1) / Pagenation.numItemsOnPage) {
+                    // error
+                    return;
+                }
+                pgi.fillPage(targetPage);
+            }
+        });
+
     }
 
-    public Pagenation setPlaceholderItem(ItemStack placeholderItem) {
-        this.placeholderItem = placeholderItem;
-        return this;
-    }
-
-    public Pagenation setplaceholderItemIndex(int[] placeholderItemIndex) {
-        this.placeholderItemIndex = placeholderItemIndex;
-        return this;
-    }
-
+    /*
+     * Sets the inventory name
+     */
     public Pagenation setInventoryName(Component inventoryName) {
         this.inventoryName = inventoryName;
         return this;
     }
     
+    /*
+     * @param items - List of items to be displayed in the pagenation 
+     */
     public Pagenation setItems(List<ItemStack> items) {
         this.items = items;
         return this;
     }
 
-    public Pagenation setBack(ItemStack back) {
-        this.back = back;
-        return this;
-    }
 
-    public Pagenation setNext(ItemStack next) {
-        this.next = next;
-        return this;
-    }
-
-    public Pagenation setClose(ItemStack close) {
-        this.close = close;
-        return this;
-    }
-
-
+    /*
+     * @return the inventory
+     */
     @Override
     public @NotNull Inventory getInventory() {
 
@@ -76,28 +91,49 @@ public class Pagenation implements InventoryHolder{
             this.inventoryName = mm.deserialize("");
         }
 
-        if (placeholderItem == null) {
-            int[] tmp = {0,1,2,3,4,5,6,7,8,9,17,18,26,27,35,36,44,46,47,48,50,51,52};
-            this.placeholderItemIndex = tmp;
-        }
-
         this.inv = Bukkit.createInventory(this, 9 * 6, inventoryName);
 
-        for (int a:placeholderItemIndex) {
-            inv.setItem(a, placeholderItem);
+        int[] tmp = {0,1,2,3,4,5,6,7,8,9,17,18,26,27,35,36,44,46,47,48,50,51,52};
+        for (int a:tmp) {
+            inv.setItem(a, 
+                new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE)
+                .setName(inventoryName)
+                .addBothClickEvent("ItemBuilder:cancel")
+                .build()
+            );
         }
 
-        this.inv.setItem(45, back);
+        this.inv.setItem(45,
+            new ItemBuilder(Material.SPECTRAL_ARROW)
+            .setName(mm.deserialize(Language.getValue(GuiApi.INSTANCE, player, "back")))
+            .addBothClickEvent("GuiAPI:prevPage")
+            .build()
+        );
 
-        this.inv.setItem(49, close);
+        this.inv.setItem(49,
+            new ItemBuilder(Material.BARRIER)
+            .setName(mm.deserialize(Language.getValue(GuiApi.INSTANCE, player, "close")))
+            .addBothClickEvent("ItemBuilder:close")
+            .build()
+        );
 
-        this.inv.setItem(53, next);
+        this.inv.setItem(53,
+            new ItemBuilder(Material.ARROW)
+            .setName(mm.deserialize(Language.getValue(GuiApi.INSTANCE, player, "next")))
+            .addBothClickEvent("GuiAPI:nextPage")
+            .build()
+        );
 
         fillPage(0);
 
         return this.inv;
     }
 
+    /*
+     * Changes the displayed items dependend on page
+     * 
+     * @param pageNum - Page number
+     */
     public void fillPage(int pageNum) {
         currentpage = pageNum;
         for (int y = 0; y < 4; y++) {
@@ -117,13 +153,34 @@ public class Pagenation implements InventoryHolder{
             if (a == -1) break;
             if (a == 18 || a == 27 || a == 36 ||
             a == 17 || a == 26 || a == 35) continue;
-            inv.setItem(a, placeholderItem);
+            inv.setItem(a, 
+                new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE)
+                .setName(mm.deserialize(""))
+                .addBothClickEvent("ItemBuilder:cancel")
+                .build()
+            );
         }
 
     }
 
-    public void reFillPage(List<ItemStack> newItems) {
-        items = newItems;
+    /*
+     * Refreshed the page in case of item change
+     */
+    public void refeshPage() {
         fillPage(currentpage);
+    }
+
+    /*
+     * adds an item to the list of items, refesh with: refeshPage
+     */
+    public void addItem(ItemStack item) {
+        items.add(item);
+    }
+
+    /*
+     * removed a spezific item
+     */
+    public void removeItem(ItemStack item) {
+        items.remove(item);
     }
 }
