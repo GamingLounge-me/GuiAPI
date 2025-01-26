@@ -1,4 +1,4 @@
-name: GuiApi
+name: GuiAPI
 version: "${version}"
 main: me.gaminglounge.guiapi.GuiApi
 description: API to create GUIS's

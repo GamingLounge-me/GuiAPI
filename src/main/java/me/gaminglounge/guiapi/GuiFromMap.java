@@ -13,16 +13,18 @@ import me.gaminglounge.itembuilder.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
-public class GuiFromMap implements InventoryHolder{
+public class GuiFromMap implements InventoryHolder {
     private final MiniMessage mm = MiniMessage.miniMessage();
 
     private Inventory inv;
+    private final InventoryHolder holder;
     private Component inventoryName;
     private final int row;
     private Map<Integer, ItemStack> items;
 
-    public GuiFromMap(int row) {
+    public GuiFromMap(InventoryHolder holder, int row) {
         this.row = row;
+        this.holder = holder;
     }
 
     public GuiFromMap setInventoryName(Component inventoryName) {
@@ -42,20 +44,24 @@ public class GuiFromMap implements InventoryHolder{
             this.inventoryName = mm.deserialize("");
         }
 
-        this.inv = Bukkit.createInventory(this, 9 * row, inventoryName);
+        this.inv = Bukkit.createInventory(holder, 9 * row, inventoryName);
 
         for (int entry : items.keySet()) {
             this.inv.setItem(entry, items.get(entry));
         }
 
-        for (int i = 0; i < inv.getSize(); i++) {
-            if (!this.inv.getItem(i).isEmpty()) continue;
+        int first = this.inv.firstEmpty();
+        if (first == -1)
+            return inv;
+
+        for (int i = first; i < inv.getSize(); i++) {
+            if (items.containsKey(i))
+                continue;
 
             this.inv.setItem(i,
-                new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE)
-                .addBothClickEvent("ItemBuilder:cancel")
-                .build()
-            );
+                    new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE)
+                            .addBothClickEvent("ItemBuilder:cancel")
+                            .build());
         }
 
         return inv;

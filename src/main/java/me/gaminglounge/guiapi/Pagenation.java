@@ -16,10 +16,11 @@ import me.gaminglounge.itembuilder.ItemBuilderManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 
-public class Pagenation implements InventoryHolder{
+public class Pagenation implements InventoryHolder {
     private final MiniMessage mm;
 
     private Inventory inv;
+    private Inventory returnInventory;
     private Component inventoryName;
 
     public List<ItemStack> items;
@@ -27,7 +28,7 @@ public class Pagenation implements InventoryHolder{
     public Player player;
 
     public int currentpage;
-    public static final int numItemsOnPage =  7 * 4;
+    public static final int numItemsOnPage = 7 * 4;
 
     /*
      * Funkitons needed:
@@ -54,11 +55,23 @@ public class Pagenation implements InventoryHolder{
             if (e.getInventory().getHolder() instanceof Pagenation pgi) {
                 e.setCancelled(true);
                 int targetPage = pgi.currentpage - 1;
-                if (targetPage < 0 || targetPage > (pgi.items.size() + Pagenation.numItemsOnPage - 1) / Pagenation.numItemsOnPage) {
+                if (targetPage < 0 || targetPage > (pgi.items.size() + Pagenation.numItemsOnPage - 1)
+                        / Pagenation.numItemsOnPage) {
                     // error
                     return;
                 }
                 pgi.fillPage(targetPage);
+            }
+        });
+
+        ItemBuilderManager.addBothClickEvent("GuiAPI:pagenation_return_to_old_inv_or_close", (event) -> {
+            event.setCancelled(true);
+            if (event.getInventory().getHolder() instanceof Pagenation pn) {
+                if (pn.returnInventory == null) {
+                    event.getWhoClicked().closeInventory();
+                } else {
+                    event.getWhoClicked().openInventory(pn.returnInventory);
+                }
             }
         });
 
@@ -71,15 +84,22 @@ public class Pagenation implements InventoryHolder{
         this.inventoryName = inventoryName;
         return this;
     }
-    
+
     /*
-     * @param items - List of items to be displayed in the pagenation 
+     * @param items - List of items to be displayed in the pagenation
      */
     public Pagenation setItems(List<ItemStack> items) {
         this.items = items;
         return this;
     }
 
+    /*
+     * 
+     */
+    public Pagenation setBackInv(Inventory returnInventory) {
+        this.returnInventory = returnInventory;
+        return this;
+    }
 
     /*
      * @return the inventory
@@ -93,36 +113,32 @@ public class Pagenation implements InventoryHolder{
 
         this.inv = Bukkit.createInventory(this, 9 * 6, inventoryName);
 
-        int[] tmp = {0,1,2,3,4,5,6,7,8,9,17,18,26,27,35,36,44,46,47,48,50,51,52};
-        for (int a:tmp) {
-            inv.setItem(a, 
-                new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE)
-                .setName(inventoryName)
-                .addBothClickEvent("ItemBuilder:cancel")
-                .build()
-            );
+        int[] tmp = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 18, 26, 27, 35, 36, 44, 46, 47, 48, 50, 51, 52 };
+        for (int a : tmp) {
+            inv.setItem(a,
+                    new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE)
+                            .setName(inventoryName)
+                            .addBothClickEvent("ItemBuilder:cancel")
+                            .build());
         }
 
         this.inv.setItem(45,
-            new ItemBuilder(Material.SPECTRAL_ARROW)
-            .setName(mm.deserialize(Language.getValue(GuiApi.INSTANCE, player, "back")))
-            .addBothClickEvent("GuiAPI:prevPage")
-            .build()
-        );
+                new ItemBuilder(Material.SPECTRAL_ARROW)
+                        .setName(mm.deserialize(Language.getValue(GuiApi.INSTANCE, player, "back")))
+                        .addBothClickEvent("GuiAPI:prevPage")
+                        .build());
 
         this.inv.setItem(49,
-            new ItemBuilder(Material.BARRIER)
-            .setName(mm.deserialize(Language.getValue(GuiApi.INSTANCE, player, "close")))
-            .addBothClickEvent("ItemBuilder:close")
-            .build()
-        );
+                new ItemBuilder(Material.BARRIER)
+                        .setName(mm.deserialize(Language.getValue(GuiApi.INSTANCE, player, "close")))
+                        .addBothClickEvent("GuiAPI:pagenation_return_to_old_inv_or_close")
+                        .build());
 
         this.inv.setItem(53,
-            new ItemBuilder(Material.ARROW)
-            .setName(mm.deserialize(Language.getValue(GuiApi.INSTANCE, player, "next")))
-            .addBothClickEvent("GuiAPI:nextPage")
-            .build()
-        );
+                new ItemBuilder(Material.ARROW)
+                        .setName(mm.deserialize(Language.getValue(GuiApi.INSTANCE, player, "next")))
+                        .addBothClickEvent("GuiAPI:nextPage")
+                        .build());
 
         fillPage(0);
 
@@ -144,21 +160,23 @@ public class Pagenation implements InventoryHolder{
         try {
             for (int y = 0; y < 4; y++) {
                 for (int x = 0; x < 7; x++) {
-                    inv.setItem((y + 1) * 9 + x + 1, items.get(y*7 + x +pageNum*numItemsOnPage));
+                    inv.setItem((y + 1) * 9 + x + 1, items.get(y * 7 + x + pageNum * numItemsOnPage));
                 }
             }
-        } catch(IndexOutOfBoundsException | NullPointerException e) {}
+        } catch (IndexOutOfBoundsException | NullPointerException e) {
+        }
 
-        for (int a = inv.firstEmpty(); a<44; a++) {
-            if (a == -1) break;
+        for (int a = inv.firstEmpty(); a < 44; a++) {
+            if (a == -1)
+                break;
             if (a == 18 || a == 27 || a == 36 ||
-            a == 17 || a == 26 || a == 35) continue;
-            inv.setItem(a, 
-                new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE)
-                .setName(mm.deserialize(""))
-                .addBothClickEvent("ItemBuilder:cancel")
-                .build()
-            );
+                    a == 17 || a == 26 || a == 35)
+                continue;
+            inv.setItem(a,
+                    new ItemBuilder(Material.GRAY_STAINED_GLASS_PANE)
+                            .setName(mm.deserialize(""))
+                            .addBothClickEvent("ItemBuilder:cancel")
+                            .build());
         }
 
     }
