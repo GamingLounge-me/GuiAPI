@@ -41,12 +41,7 @@ public class Pagenation implements InventoryHolder {
         ItemBuilderManager.addBothClickEvent("GuiAPI:nextPage", (e) -> {
             if (e.getInventory().getHolder() instanceof Pagenation pgi) {
                 e.setCancelled(true);
-                int targetPage = pgi.currentpage + 1;
-                if (targetPage < 0 || targetPage > pgi.items.size() / Pagenation.numItemsOnPage) {
-                    // error
-                    return;
-                }
-                pgi.fillPage(targetPage);
+                pgi.fillPage(pgi.currentpage + 1);
             }
         });
 
@@ -57,9 +52,7 @@ public class Pagenation implements InventoryHolder {
         ItemBuilderManager.addBothClickEvent("GuiAPI:prevPage", (e) -> {
             if (e.getInventory().getHolder() instanceof Pagenation pgi) {
                 e.setCancelled(true);
-                int targetPage = pgi.currentpage - 1;
-
-                pgi.fillPage(targetPage);
+                pgi.fillPage(pgi.currentpage - 1);
             }
         });
 
