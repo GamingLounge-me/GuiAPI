@@ -1,7 +1,17 @@
-name: GuiApi
+name: GuiAPI
 version: "${version}"
 main: me.gaminglounge.guiapi.GuiApi
 description: API to create GUIS's
 api-version: "1.21.4"
 authors:
   - "Jon1Games"
+dependencies:
+  server:
+    ItemBuilder:
+      load: BEFORE
+      required: true
+      join-classpath: true
+    ConfigAPI:
+      load: BEFORE
+      required: true
+      join-classpath: true

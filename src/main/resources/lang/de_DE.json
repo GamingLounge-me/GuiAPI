@@ -1,0 +1,9 @@
+{
+    "next": "weiter",
+    "back": "zurück",
+    "close": "<red>schließen</red>",
+    "error.clickToClose": "<white>Klicke um zurück zukehren.</white>",
+    "submit.name": "Bist du sicher das du dies run willst?",
+    "submit.cancel": "Abbrechen",
+    "submit.submit": "Bestätigen"
+}
