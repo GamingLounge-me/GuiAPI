@@ -77,7 +77,7 @@ public class Pagenation implements InventoryHolder {
 
     }
 
-    /*
+    /**
      * Sets the inventory name
      */
     public Pagenation setInventoryName(Component inventoryName) {
