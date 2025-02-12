@@ -21,32 +21,32 @@ public class SubmitPromt implements InventoryHolder {
     private static final MiniMessage mm = MiniMessage.miniMessage();
 
     public Inventory inv, returnInv;
-    private Consumer<InventoryClickEvent> e;
+    private Consumer<InventoryClickEvent> event;
     private boolean close;
 
     /**
      * 
      * @param returnInv the inv that is opened after submit/caalcel
      * @param p         the player (for the language)
-     * @param e         The event that will be executed on submit
+     * @param event     The event that will be executed on submit
      * 
      */
-    public SubmitPromt(Inventory returnInv, Player p, Consumer<InventoryClickEvent> e) {
-        this(returnInv, p, e, false);
+    public SubmitPromt(Inventory returnInv, Player p, Consumer<InventoryClickEvent> event) {
+        this(returnInv, p, event, false);
     }
 
     /**
      * 
      * @param returnInv the inv that is opened after submit/caalcel
      * @param p         the player (for the language)
-     * @param e         The event that will be executed on submit
+     * @param event     The event that will be executed on submit
      * @param close     default = false, if true it will close the inventory on
      *                  submit
      * 
      */
-    public SubmitPromt(Inventory returnInv, Player p, Consumer<InventoryClickEvent> e, boolean close) {
+    public SubmitPromt(Inventory returnInv, Player p, Consumer<InventoryClickEvent> acceptEvent, boolean close) {
         this.returnInv = returnInv;
-        this.e = e;
+        this.event = acceptEvent;
         this.close = close;
         Map<Integer, ItemStack> items = new HashMap<>();
 
@@ -77,7 +77,7 @@ public class SubmitPromt implements InventoryHolder {
         ItemBuilderManager.addBothClickEvent("GuiAPI:submitpromt_submit", (event) -> {
             event.setCancelled(true);
             if (event.getInventory().getHolder() instanceof SubmitPromt sp) {
-                sp.e.accept(event);
+                sp.event.accept(event);
                 if (close)
                     event.getWhoClicked().closeInventory();
                 else
