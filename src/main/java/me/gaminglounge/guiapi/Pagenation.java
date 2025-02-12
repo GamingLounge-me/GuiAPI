@@ -148,7 +148,7 @@ public class Pagenation implements InventoryHolder {
         return (items.size() + numItemsOnPage - 1) / numItemsOnPage;
     }
 
-    /**
+    /***
      * Changes the displayed items dependend on page
      * 
      * @param pageNum - Page number
