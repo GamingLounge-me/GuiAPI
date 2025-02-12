@@ -145,7 +145,7 @@ public class Pagenation implements InventoryHolder {
         return this.inv;
     }
 
-    /*
+    /**
      * Changes the displayed items dependend on page
      * 
      * @param pageNum - Page number
