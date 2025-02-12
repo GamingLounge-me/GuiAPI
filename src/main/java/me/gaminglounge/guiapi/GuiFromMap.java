@@ -30,9 +30,7 @@ public class GuiFromMap implements InventoryHolder {
      * 
      */
     public GuiFromMap(InventoryHolder holder, int row) {
-        this.row = row;
-        this.holder = holder;
-        this.fill = true;
+        this(holder, row, true);
     }
 
     /**
