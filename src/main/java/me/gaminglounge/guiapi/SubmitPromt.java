@@ -22,14 +22,36 @@ public class SubmitPromt implements InventoryHolder {
 
     public Inventory inv, returnInv;
     private Consumer<InventoryClickEvent> e;
+    private boolean close;
 
+    /**
+     * 
+     * @param returnInv the inv that is opened after submit/caalcel
+     * @param p         the player (for the language)
+     * @param e         The event that will be executed on submit
+     * 
+     */
     public SubmitPromt(Inventory returnInv, Player p, Consumer<InventoryClickEvent> e) {
+        this(returnInv, p, e, false);
+    }
+
+    /**
+     * 
+     * @param returnInv the inv that is opened after submit/caalcel
+     * @param p         the player (for the language)
+     * @param e         The event that will be executed on submit
+     * @param close     default = false, if true it will close the inventory on
+     *                  submit
+     * 
+     */
+    public SubmitPromt(Inventory returnInv, Player p, Consumer<InventoryClickEvent> e, boolean close) {
         this.returnInv = returnInv;
         this.e = e;
+        this.close = close;
         Map<Integer, ItemStack> items = new HashMap<>();
 
         items.put(
-                4,
+                2,
                 new ItemBuilder(Material.GREEN_WOOL)
                         .setName(mm.deserialize(Language.getValue(GuiApi.INSTANCE, p, "submit.submit")))
                         .addBothClickEvent("GuiAPI:submitpromt_submit")
@@ -56,7 +78,10 @@ public class SubmitPromt implements InventoryHolder {
             event.setCancelled(true);
             if (event.getInventory().getHolder() instanceof SubmitPromt sp) {
                 sp.e.accept(event);
-                event.getWhoClicked().openInventory(sp.returnInv);
+                if (close)
+                    event.getWhoClicked().closeInventory();
+                else
+                    event.getWhoClicked().openInventory(sp.returnInv);
             }
         });
 
