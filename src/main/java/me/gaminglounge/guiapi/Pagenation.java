@@ -45,10 +45,6 @@ public class Pagenation implements InventoryHolder {
             }
         });
 
-        {
-
-        }
-
         ItemBuilderManager.addBothClickEvent("GuiAPI:prevPage", (e) -> {
             if (e.getInventory().getHolder() instanceof Pagenation pgi) {
                 e.setCancelled(true);
