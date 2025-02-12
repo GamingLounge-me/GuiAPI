@@ -188,7 +188,7 @@ public class Pagenation implements InventoryHolder {
         fillPage(currentpage);
     }
 
-    /*
+    /**
      * adds an item to the list of items, refesh with: refeshPage
      */
     public void addItem(ItemStack item) {
