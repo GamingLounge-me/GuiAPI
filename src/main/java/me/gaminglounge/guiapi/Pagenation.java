@@ -181,7 +181,7 @@ public class Pagenation implements InventoryHolder {
 
     }
 
-    /*
+    /**
      * Refreshed the page in case of item change
      */
     public void refeshPage() {
