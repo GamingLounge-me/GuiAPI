@@ -101,7 +101,7 @@ public class Pagenation implements InventoryHolder {
         return this;
     }
 
-    /*
+    /**
      * @return the inventory
      */
     @Override
