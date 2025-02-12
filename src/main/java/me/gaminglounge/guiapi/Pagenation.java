@@ -31,7 +31,7 @@ public class Pagenation implements InventoryHolder {
     public static final int numItemsOnPage = 7 * 4;
 
     /*
-     * Funkitons needed:
+     * Functions needed:
      * - setPlaceholderItem()
      * - setItems()
      */
