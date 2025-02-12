@@ -85,7 +85,7 @@ public class Pagenation implements InventoryHolder {
         return this;
     }
 
-    /*
+    /**
      * @param items - List of items to be displayed in the pagenation
      */
     public Pagenation setItems(List<ItemStack> items) {
