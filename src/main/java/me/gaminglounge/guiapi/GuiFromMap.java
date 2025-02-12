@@ -60,7 +60,7 @@ public class GuiFromMap implements InventoryHolder {
     public @NotNull Inventory getInventory() {
 
         if (inventoryName == null) {
-            this.inventoryName = mm.deserialize("");
+            this.inventoryName = Component.empty();
         }
 
         this.inv = Bukkit.createInventory(holder, 9 * row, inventoryName);
