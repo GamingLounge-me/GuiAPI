@@ -195,8 +195,8 @@ public class Pagenation implements InventoryHolder {
         items.add(item);
     }
 
-    /*
-     * removed a spezific item
+    /**
+     * removed a specific item
      */
     public void removeItem(ItemStack item) {
         items.remove(item);
