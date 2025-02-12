@@ -30,10 +30,9 @@ public class Pagenation implements InventoryHolder {
     public int currentpage;
     public static final int numItemsOnPage = 7 * 4;
 
-    /*
-     * Functions needed:
-     * - setPlaceholderItem()
-     * - setItems()
+    /**
+     * @see setPlaceholderItem()
+     * @see setItems()
      */
     public Pagenation(Player p) {
         this.player = p;
@@ -51,15 +50,15 @@ public class Pagenation implements InventoryHolder {
             }
         });
 
+        {
+
+        }
+
         ItemBuilderManager.addBothClickEvent("GuiAPI:prevPage", (e) -> {
             if (e.getInventory().getHolder() instanceof Pagenation pgi) {
                 e.setCancelled(true);
                 int targetPage = pgi.currentpage - 1;
-                if (targetPage < 0 || targetPage > (pgi.items.size() + Pagenation.numItemsOnPage - 1)
-                        / Pagenation.numItemsOnPage) {
-                    // error
-                    return;
-                }
+
                 pgi.fillPage(targetPage);
             }
         });
@@ -145,18 +144,25 @@ public class Pagenation implements InventoryHolder {
         return this.inv;
     }
 
-    /*
+    public int getHighestPageNumber() {
+        return (items.size() + numItemsOnPage - 1) / numItemsOnPage;
+    }
+
+    /**
      * Changes the displayed items dependend on page
      * 
      * @param pageNum - Page number
      */
     public void fillPage(int pageNum) {
+        pageNum = Math.clamp(pageNum, 0, getHighestPageNumber());
         currentpage = pageNum;
+
         for (int y = 0; y < 4; y++) {
             for (int x = 0; x < 7; x++) {
                 inv.clear((y + 1) * 9 + x + 1);
             }
         }
+
         try {
             for (int y = 0; y < 4; y++) {
                 for (int x = 0; x < 7; x++) {
@@ -181,14 +187,14 @@ public class Pagenation implements InventoryHolder {
 
     }
 
-    /*
+    /**
      * Refreshed the page in case of item change
      */
     public void refeshPage() {
         fillPage(currentpage);
     }
 
-    /*
+    /**
      * adds an item to the list of items, refesh with: refeshPage
      */
     public void addItem(ItemStack item) {
