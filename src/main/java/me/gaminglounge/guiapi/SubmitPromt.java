@@ -37,11 +37,11 @@ public class SubmitPromt implements InventoryHolder {
 
     /**
      * 
-     * @param returnInv the inv that is opened after submit/caalcel
-     * @param p         the player (for the language)
-     * @param event     The event that will be executed on submit
-     * @param close     default = false, if true it will close the inventory on
-     *                  submit insted of open the old one
+     * @param returnInv   the inv that is opened after submit/caalcel
+     * @param p           the player (for the language)
+     * @param acceptEvent The event that will be executed on submit
+     * @param close       default = false, if true it will close the inventory on
+     *                    submit insted of open the old one
      * 
      */
     public SubmitPromt(Inventory returnInv, Player p, Consumer<InventoryClickEvent> acceptEvent, boolean close) {
