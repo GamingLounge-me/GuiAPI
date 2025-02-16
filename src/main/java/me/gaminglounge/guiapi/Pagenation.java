@@ -31,8 +31,7 @@ public class Pagenation implements InventoryHolder {
     public static final int numItemsOnPage = 7 * 4;
 
     /**
-     * @see setPlaceholderItem()
-     * @see setItems()
+     * @see setItems(List<ItemStack>)
      */
     public Pagenation(Player p) {
         this.player = p;
