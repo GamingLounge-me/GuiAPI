@@ -42,8 +42,7 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
     implementation("me.gaminglounge:config-api:1.0.0")
-    
-    compileOnly files("build/libs/ItemBuilder-0.0.jar")
+    implementation("me.gaminglounge:build-api:1.0.0")
 }
 
 def targetJavaVersion = 21
