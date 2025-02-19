@@ -134,10 +134,10 @@ public class Pagenation implements InventoryHolder {
 
     /**
      * 
-     * @return The maximal legal possible page number
+     * @return The number og pages
      * 
      */
-    public int getMaxPageNum() {
+    public int getNumberOfPages() {
         return (items.size() + numItemsOnPage - 1) / numItemsOnPage;
     }
 
@@ -147,7 +147,7 @@ public class Pagenation implements InventoryHolder {
      * @param pageNum - Page number
      */
     public void fillPage(int pageNum) {
-        pageNum = Math.clamp(pageNum, 0, getMaxPageNum() - 1);
+        pageNum = Math.clamp(pageNum, 0, getNumberOfPages() - 1);
         currentpage = pageNum;
 
         for (int y = 0; y < 4; y++) {
