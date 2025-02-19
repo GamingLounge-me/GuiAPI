@@ -132,11 +132,16 @@ public class Pagenation implements InventoryHolder {
         return this.inv;
     }
 
+    /**
+     * 
+     * @return The maximal legal possible page number
+     * 
+     */
     public int getMaxPageNum() {
         return (items.size() + numItemsOnPage - 1) / numItemsOnPage;
     }
 
-    /***
+    /**
      * Changes the displayed items dependend on page
      * 
      * @param pageNum - Page number
