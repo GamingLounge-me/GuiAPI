@@ -143,7 +143,6 @@ public class Pagenation implements InventoryHolder {
      */
     public void fillPage(int pageNum) {
         pageNum = Math.clamp(pageNum, 0, getHighestPageNumber());
-        System.err.println(pageNum);
         currentpage = pageNum;
 
         for (int y = 0; y < 4; y++) {
