@@ -132,17 +132,23 @@ public class Pagenation implements InventoryHolder {
         return this.inv;
     }
 
-    public int getHighestPageNumber() {
+    /**
+     * 
+     * @return The number of pages, returning 0 if there arent any items in the
+     *         pagenation
+     * 
+     */
+    public int getNumberOfPages() {
         return (items.size() + numItemsOnPage - 1) / numItemsOnPage;
     }
 
-    /***
+    /**
      * Changes the displayed items dependend on page
      * 
      * @param pageNum - Page number
      */
     public void fillPage(int pageNum) {
-        pageNum = Math.clamp(pageNum, 0, getHighestPageNumber());
+        pageNum = Math.clamp(pageNum, 0, Math.max(0, getNumberOfPages() - 1));
         currentpage = pageNum;
 
         for (int y = 0; y < 4; y++) {
