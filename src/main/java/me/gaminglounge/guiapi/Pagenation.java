@@ -138,7 +138,7 @@ public class Pagenation implements InventoryHolder {
      * 
      */
     public int getNumberOfPages() {
-        return (items.size() + numItemsOnPage - 1) / numItemsOnPage;
+        return Math.max((items.size() + numItemsOnPage - 1) / numItemsOnPage, 0);
     }
 
     /**
